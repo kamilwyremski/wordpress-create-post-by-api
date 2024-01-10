@@ -11,7 +11,6 @@ $lines = explode("\n", $envContent);
 
 foreach ($lines as $line) {
   $line = trim($line);
-
   if (!empty($line) && strpos($line, '=') !== false) {
     list($key, $value) = explode('=', $line, 2);
     $key = trim($key);
@@ -22,6 +21,8 @@ foreach ($lines as $line) {
 }
 
 require_once('wordpress-api.class.php');
+
+$wordpressApi = new WordpressApi(getenv('WORDPRESS_DOMAIN'), getenv('WORDPRESS_USERNAME'), getenv('WORDPRESS_PASSWORD'));
 
 ?>
 <!DOCTYPE html>
@@ -38,9 +39,6 @@ require_once('wordpress-api.class.php');
   <div class="container mt-5">
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST" and !empty($_POST['title']) and !empty($_POST['lid']) and !empty($_POST['content'])) {
-
-      $wordpressApi = new WordpressApi(getenv('WORDPRESS_DOMAIN'), getenv('WORDPRESS_USERNAME'), getenv('WORDPRESS_PASSWORD'));
-
       $thumbnail_id = null;
       if (!empty($_POST['thumb'])) {
         try {
@@ -50,7 +48,7 @@ require_once('wordpress-api.class.php');
         }
       }
       $tags = [];
-      if ($_POST['tags']) {
+      if (!empty($_POST['tags'])) {
         $new_tags = explode(',', $_POST['tags']);
         foreach ($new_tags as $tag) {
           try {
@@ -84,7 +82,7 @@ require_once('wordpress-api.class.php');
       </div>
 
       <div class="mb-3">
-        <label for="content" class="form-label">Content:</label>
+        <label for="content" class="form-label">Content (in HTML):</label>
         <textarea name="content" rows="4" required class="form-control" id="content"></textarea>
       </div>
 
@@ -94,7 +92,7 @@ require_once('wordpress-api.class.php');
       </div>
 
       <div class="mb-3">
-        <label for="thumb" class="form-label">Link to image:</label>
+        <label for="thumb" class="form-label">Link to thumb:</label>
         <input type="url" name="thumb" class="form-control" id="thumb">
       </div>
 

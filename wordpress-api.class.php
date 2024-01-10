@@ -52,7 +52,7 @@ class WordpressApi
     }
   }
 
-  function addTag($tag){
+  function addTag(string $tag){
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $this->domain . '/wp-json/wp/v2/tags');
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
@@ -79,10 +79,10 @@ class WordpressApi
     }
   }
 
-  private function replaceImageLinks($matches) {
+  private function replaceImageLinks(array $matches) {
     $imageData = $this->addMedia($matches[1]);
     return str_replace($matches[1], $imageData['guid']['rendered'], $matches[0]);
-}
+  }
 
   function addArticle(string $title, string $body = '', string $lid = '', array $tags = [], string $thumbnail_id = null){
 
